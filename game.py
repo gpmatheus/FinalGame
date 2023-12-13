@@ -1,4 +1,5 @@
 import pygame
+import game_map
 
 pygame.init()
 
@@ -10,8 +11,10 @@ pygame.display.set_caption("Trabalho final de Lab Games")
 # build scenario
 
 
-background = pygame.image.load('assets/images/background.png')
-background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+# background = pygame.image.load('assets/images/background.png')
+# background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+
+map = game_map.Map(screen)
 
 clock = pygame.time.Clock()
 running = True
@@ -26,10 +29,10 @@ while running:
             running = False
     
     # clear screen
-    screen.fill((80, 80, 80))
+    # screen.fill((80, 80, 80))
 
-    # draw background
-    # screen.blit(background, (0, 0))
+    # draw map
+    map.draw(screen)
 
     # update screen
     pygame.display.flip()

@@ -3,18 +3,10 @@ import game_map
 
 pygame.init()
 
-WIDTH = 800
-HEIGHT = 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+map = game_map.Map()
+SCREEN_DIMENSION = map.get_map_dim()
+screen = pygame.display.set_mode(SCREEN_DIMENSION)
 pygame.display.set_caption("Trabalho final de Lab Games")
-
-# build scenario
-
-
-# background = pygame.image.load('assets/images/background.png')
-# background = pygame.transform.scale(background, (WIDTH, HEIGHT))
-
-map = game_map.Map(screen)
 
 clock = pygame.time.Clock()
 running = True

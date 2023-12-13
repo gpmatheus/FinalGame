@@ -7,10 +7,33 @@ class Area():
         self.closed_sides = closed_sides
 
         self.TOP_INDEX = 0
-        self.RIGHT_INDEX = 0
-        self.DOWN_INDEX = 0
-        self.LEFT_INDEX = 0
+        self.RIGHT_INDEX = 1
+        self.DOWN_INDEX = 2
+        self.LEFT_INDEX = 3
     
+    # def get_closed_sides(self):
+    #     return self.closed_sides
+
+    # def get_coordinate(self):
+    #     return self.coordinate
+    
+    # def get_dimensions(self):
+    #     return self.dimensions
+
+    def draw_walls(self, screen, line_color=(0, 0, 0)):
+        if self.closed_sides[self.TOP_INDEX]:
+            line_end = (self.coordinate[0] + self.dimensions[0] - 1, self.coordinate[1])
+            pygame.draw.line(screen, line_color, (self.coordinate[0], self.coordinate[1]), line_end)
+        if self.closed_sides[self.RIGHT_INDEX]:
+            line_end = (self.coordinate[0] + self.dimensions[0] - 1, self.coordinate[1] + self.dimensions[1] - 1)
+            pygame.draw.line(screen, line_color, (self.coordinate[0] + self.dimensions[0] - 1, self.coordinate[1]), line_end)
+        if self.closed_sides[self.DOWN_INDEX]:
+            line_end = (self.coordinate[0], self.coordinate[1] + self.dimensions[1] - 1)
+            pygame.draw.line(screen, line_color, (self.coordinate[0] + self.dimensions[0] - 1, self.coordinate[1] + self.dimensions[1] - 1), line_end)
+        if self.closed_sides[self.LEFT_INDEX]:
+            line_end = (self.coordinate[0], self.coordinate[1])
+            pygame.draw.line(screen, line_color, (self.coordinate[0], self.coordinate[1] + self.dimensions[1] - 1), line_end)
+
     def set_coordinate(self, coordinate):
         self.coordinate = coordinate
     
@@ -18,56 +41,64 @@ class Area():
         self.dimensions = dimensions
         self.tolerance = dimensions[0] // 4
 
-    def can_go_top(entity):
+    def can_go_top(self, entity):
         is_possible = self.closed_sides[self.TOP_INDEX]
         x, = entity.rect
         return (is_possible and self.horizontal_tolerance(x))
     
-    def can_go_right(entity):
+    def can_go_right(self, entity):
         is_possible = self.closed_sides[self.RIGHT_INDEX]
         x, y = entity.rect
         return (is_possible and self.vertical_tolerance(y))
 
-    def can_go_down(entity):
+    def can_go_down(self, entity):
         is_possible = self.closed_sides[self.DOWN_INDEX]
-        x, entity.rect
+        x, = entity.rect
         return (is_possible and self.horizontal_tolerance(x))
     
-    def can_go_left():
+    def can_go_left(self, entity):
         is_possible = self.closed_sides[self.LEFT_INDEX]
         x, y = entity.rect
         return (is_possible and self.vertical_tolerance(y))
     
-    def horizontal_tolerance(x):
+    def horizontal_tolerance(self, x):
         return (x > self.coordinate[0] - self.tolerance and x < self.coordinate[0] + self.tolerance)
     
-    def vertical_tolerance(y):
+    def vertical_tolerance(self, y):
         return (y > self.coordinate[1] - self.tolerance and y < self.coordinate[1] + self.tolerance)
 
 class Map():
 
-    def __init__(self, screen):
+    def __init__(self, area_dim=(50, 50)):
 
-        # set map image
-        background = pygame.image.load('assets/images/background.png')
-        self.background = pygame.transform.scale(background, pygame.display.get_surface().get_size())
+        # set area dimension
+        self.map_dim = (area_dim[0] * 12, area_dim[1] * 11)
 
         # build areas
         self.areas = self.generate_areas()
-        width, height = pygame.display.get_surface().get_size()
+
         for line_index, line in enumerate(self.areas):
-            for row_index, area in enumerate(line):
-                area_width = (width // len(line))
-                area_height = (height // len(self.areas))
-                x = area_width * row_index
-                y = area_height * line_index
-                area.set_coordinate((x, y))
-                area.set_dimensions((area_width, area_height))
+            for column_index, area in enumerate(line):
+                area.set_coordinate((area_dim[0] * column_index, area_dim[1] * line_index))
+                area.set_dimensions(area_dim)
+        
+        # set map image
+        background = pygame.image.load('assets/images/background.png')
+        self.background = pygame.transform.scale(background, self.map_dim)
+
+    def get_map_dim(self):
+        return self.map_dim
 
     def draw(self, screen):
-        screen.blit(self.background, (0, 0))
+        # draw background
+        # screen.blit(self.background, (0, 0))
 
-    def get_area(width, height):
+        # draw walls
+        for line in self.areas:
+            for area in line:
+                area.draw_walls(screen, line_color=(255, 255, 255))
+
+    def get_area(self, width, height):
         return self.areas[height][width]
 
     def generate_areas(self):

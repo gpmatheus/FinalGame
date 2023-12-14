@@ -8,6 +8,8 @@ class Entity(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(image, dimension)
         self.rect = self.image.get_rect()
         self.area = area
+        self.rect.x = area.coordinate[0]
+        self.rect.y = area.coordinate[1]
     
     def set_area(self, area):
         self.area = area

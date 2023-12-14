@@ -10,15 +10,6 @@ class Area():
         self.RIGHT_INDEX = 1
         self.DOWN_INDEX = 2
         self.LEFT_INDEX = 3
-    
-    # def get_closed_sides(self):
-    #     return self.closed_sides
-
-    # def get_coordinate(self):
-    #     return self.coordinate
-    
-    # def get_dimensions(self):
-    #     return self.dimensions
 
     def set_index(self, x, y):
         self.x = x

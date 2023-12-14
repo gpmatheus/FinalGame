@@ -50,11 +50,17 @@ while running:
     if weapon.should_generate():
         generate_weapon()
     
+    # draw or delete weapon
     for wp in weapons.sprites():
         if wp.count_tick():
             wp.draw(screen)
         else:
             wp.kill()
+    
+    # check player 1 weapon colisions
+    p1_weapon_colisions = pygame.sprite.spritecollide(player, weapons, True)
+    if p1_weapon_colisions:
+        player.take_weapon(p1_weapon_colisions[0])
 
     # update screen
     pygame.display.flip()

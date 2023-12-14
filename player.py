@@ -10,6 +10,7 @@ class Player(entity.Entity):
         self.DOWN_INDEX = 2
         self.RIGHT_INDEX = 3
         self.speed = 2
+        self.weapon = None
         self.set_keys(keys)
 
     def set_keys(self, keys):
@@ -42,4 +43,19 @@ class Player(entity.Entity):
                 self.rect.y += self.speed
                 if self.rect.centery > ar.coordinate[1] + ar.dimensions[1] and ar.y < 11:
                     self.set_area(self.game_map.get_area(ar.x, ar.y + 1))
+    
+    def take_weapon(self, weapon):
+        self.weapon = weapon
 
+    def draw(self, screen):
+        super().draw(screen)
+        if self.weapon and self.weapon.player_count_tick():
+            self.draw_weapon(screen)
+        else:
+            self.weapon = None
+    
+    def draw_weapon(self, screen):
+        self.weapon.rect.x = self.rect.x
+        self.weapon.rect.y = self.rect.y
+        self.weapon.draw(screen)
+        

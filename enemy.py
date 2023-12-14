@@ -8,6 +8,7 @@ class Enemy(entity.Entity):
         super().__init__(game_map, pygame.image.load('assets/images/morto-vivo.png'), area, dimension)
         self.direction = random.randint(0, 3)
         self.speed = 1
+        pygame.mixer.Sound('assets/audio/zumbi.mp3').play()
     
     def find_another_direction(self):
         sides = [self.area.closed_sides[0], self.area.closed_sides[1], self.area.closed_sides[2], self.area.closed_sides[3]]
@@ -92,6 +93,6 @@ def should_generate():
     global ticks_to_generate_enemy
     ticks_to_generate_enemy -= 1
     if ticks_to_generate_enemy <= 0:
-        ticks_to_generate_enemy = random.randint(300, 400)
+        ticks_to_generate_enemy = random.randint(200, 280)
         return True
     return False        

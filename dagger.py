@@ -9,3 +9,6 @@ class Dagger(weapon.Weapon):
     
     def attack(self):
         print('attack')
+    
+    def update(self, screen):
+        pass

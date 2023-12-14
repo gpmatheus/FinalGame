@@ -15,6 +15,8 @@ class Player(entity.Entity):
         
         self.direction = 0
         self.set_keys(keys)
+        
+        self.take_weapon_sound_effect = pygame.mixer.Sound('assets/audio/pegando_arma.mp3')
 
     def set_keys(self, keys):
         self.keys = keys
@@ -56,9 +58,11 @@ class Player(entity.Entity):
     
     def attack(self):
         if self.weapon:
+            print('esta com arma')
             self.weapon.attack(self.direction)
     
     def take_weapon(self, weapon):
+        self.take_weapon_sound_effect.play()
         self.weapon = weapon
         self.weapon.set_holder(self)
 

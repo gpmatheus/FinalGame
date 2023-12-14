@@ -17,6 +17,12 @@ pygame.display.set_caption("Trabalho final de Lab Games")
 player1 = player.Player(map, pygame.image.load('assets/images/personagem-jogavel.png'), map.get_area(0, 6))
 player2 = player.Player(map, pygame.image.load('assets/images/personagem-jogavel-2.png'), map.get_area(11, 6), keys=(pygame.K_LEFT, pygame.K_UP, pygame.K_DOWN, pygame.K_RIGHT, pygame.K_SPACE))
 
+pygame.mixer.music.load('assets/audio/trilha_sonora.mp3')
+pygame.mixer.music.set_volume(0.3)
+pygame.mixer.music.play()
+
+winner = None
+
 weapons = pygame.sprite.Group()
 def generate_weapon():
     i = random.randint(0, 1)
@@ -34,8 +40,11 @@ def spawn_enemy():
     y = random.randint(0, 10)
     enemies.add(enemy.Enemy(map, map.get_area(x, y)))
 
+dying_sound_effect = pygame.mixer.Sound('assets/audio/zumbi_morrendo.mp3')
+
 clock = pygame.time.Clock()
 running = True
+finishing = True
 while running:
 
     # limits the clock
@@ -45,6 +54,7 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            finishing = False
     
     player1.check_pressed_keys(pygame.key.get_pressed())
     player2.check_pressed_keys(pygame.key.get_pressed())
@@ -92,18 +102,22 @@ while running:
     p1_enemy_colision = pygame.sprite.spritecollide(player1, enemies, False)
     if p1_enemy_colision:
         if player1.weapon:
+            dying_sound_effect.play()
             p1_enemy_colision[0].kill()
         else:
             print("player 2 ganhou")
+            winner = player2
             break
     
     # check player 2 enemy colision
     p2_enemy_colision = pygame.sprite.spritecollide(player2, enemies, False)
     if p2_enemy_colision:
         if player2.weapon:
+            dying_sound_effect.play()
             p2_enemy_colision[0].kill()
         else:
             print("player 1 ganhou")
+            winner = player1
             break
         
     # check players colition
@@ -115,17 +129,39 @@ while running:
         break
     if players_colision and players_colision[0].weapon:
         print("player 2 ganhou")
+        winner = player2
         break
     if players_colision and player1.weapon:
         print("player 1 ganhou")
+        winner = player1
         break
 
     # update enamies
-    for en in enemies:
+    for en in enemies.sprites():
         en.walk()
         en.draw(screen)
+    
+    for we in weapons.sprites():
+        we.update(screen)
 
     # update screen
     pygame.display.flip()
+
+while finishing:
+    # check if player quit
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            finishing = False
+    
+    if winner:
+        font = pygame.font.Font(None, 72)
+        text_surface = font.render('Vencedor', True, (255, 255, 255))
+        text_rect = text_surface.get_rect(center=(SCREEN_DIMENSION[0] // 2, SCREEN_DIMENSION[1] // 4))
+        screen.blit(text_surface, text_rect)
+        image = pygame.transform.scale(winner.image, (300, 300))
+        screen.blit(image, (200, 200))
+        pygame.display.flip()
+
+pygame.mixer.music.stop()
 
 pygame.quit()

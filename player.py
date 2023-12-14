@@ -1,29 +1,19 @@
 import pygame
+import entity
 
-class Player(pygame.sprite.Sprite):
+class Player(entity.Entity):
     
-    def __init__(self, game_map, area=None, dimension=(50, 50), keys=(pygame.K_a, pygame.K_w, pygame.K_s, pygame.K_d)):
-        super().__init__()
-        self.game_map = game_map
+    def __init__(self, game_map, image, area=None, dimension=(50, 50), keys=(pygame.K_a, pygame.K_w, pygame.K_s, pygame.K_d)):
+        super().__init__(game_map, image, area, dimension)
         self.LEFT_INDEX = 0
         self.UP_INDEX = 1
         self.DOWN_INDEX = 2
         self.RIGHT_INDEX = 3
-        self.image = pygame.Surface(dimension)
-        self.image.fill((0, 0, 200))
-        self.rect = self.image.get_rect()
         self.speed = 2
-        self.area = area
         self.set_keys(keys)
 
     def set_keys(self, keys):
         self.keys = keys
-    
-    def set_area(self, area):
-        self.area = area
-    
-    def draw(self, screen):
-        screen.blit(self.image, self.rect)
     
     def check_pressed_keys(self, pressed_keys):
     

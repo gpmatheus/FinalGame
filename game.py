@@ -9,7 +9,7 @@ SCREEN_DIMENSION = map.get_map_dim()
 screen = pygame.display.set_mode(SCREEN_DIMENSION)
 pygame.display.set_caption("Trabalho final de Lab Games")
 
-player = player.Player(map, map.get_area(0, 0))
+player = player.Player(map, pygame.image.load('assets/images/personagem-jogavel.png'), map.get_area(0, 0))
 
 clock = pygame.time.Clock()
 running = True

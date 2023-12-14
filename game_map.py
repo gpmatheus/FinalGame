@@ -20,6 +20,10 @@ class Area():
     # def get_dimensions(self):
     #     return self.dimensions
 
+    def set_index(self, x, y):
+        self.x = x
+        self.y = y
+
     def draw_walls(self, screen, line_color=(0, 0, 0)):
         if self.closed_sides[self.TOP_INDEX]:
             line_end = (self.coordinate[0] + self.dimensions[0] - 1, self.coordinate[1])
@@ -34,32 +38,31 @@ class Area():
             line_end = (self.coordinate[0], self.coordinate[1])
             pygame.draw.line(screen, line_color, (self.coordinate[0], self.coordinate[1] + self.dimensions[1] - 1), line_end)
 
+    def get_closed_sides(self):
+        return self.closed_sides
+
     def set_coordinate(self, coordinate):
         self.coordinate = coordinate
     
     def set_dimensions(self, dimensions):
         self.dimensions = dimensions
         self.tolerance = dimensions[0] // 4
-
+    
     def can_go_top(self, entity):
-        is_possible = self.closed_sides[self.TOP_INDEX]
-        x, = entity.rect
-        return (is_possible and self.horizontal_tolerance(x))
+        is_possible = not self.closed_sides[self.TOP_INDEX]
+        return ((is_possible or entity.rect.y > self.coordinate[1]) and self.horizontal_tolerance(entity.rect.x))
     
     def can_go_right(self, entity):
-        is_possible = self.closed_sides[self.RIGHT_INDEX]
-        x, y = entity.rect
-        return (is_possible and self.vertical_tolerance(y))
-
+        is_possible = not self.closed_sides[self.RIGHT_INDEX]
+        return ((is_possible or entity.rect.x + entity.rect.w - 1 < self.coordinate[0] + self.dimensions[0] - 1) and self.vertical_tolerance(entity.rect.y))
+    
     def can_go_down(self, entity):
-        is_possible = self.closed_sides[self.DOWN_INDEX]
-        x, = entity.rect
-        return (is_possible and self.horizontal_tolerance(x))
+        is_possible = not self.closed_sides[self.DOWN_INDEX]
+        return ((is_possible or entity.rect.y + entity.rect.h - 1 < self.coordinate[1] + self.dimensions[1] - 1) and self.horizontal_tolerance(entity.rect.x))
     
     def can_go_left(self, entity):
-        is_possible = self.closed_sides[self.LEFT_INDEX]
-        x, y = entity.rect
-        return (is_possible and self.vertical_tolerance(y))
+        is_possible = not self.closed_sides[self.LEFT_INDEX]
+        return ((is_possible or entity.rect.x > self.coordinate[0]) and self.vertical_tolerance(entity.rect.y))
     
     def horizontal_tolerance(self, x):
         return (x > self.coordinate[0] - self.tolerance and x < self.coordinate[0] + self.tolerance)
@@ -81,6 +84,7 @@ class Map():
             for column_index, area in enumerate(line):
                 area.set_coordinate((area_dim[0] * column_index, area_dim[1] * line_index))
                 area.set_dimensions(area_dim)
+                area.set_index(column_index, line_index)
         
         # set map image
         background = pygame.image.load('assets/images/background.png')
